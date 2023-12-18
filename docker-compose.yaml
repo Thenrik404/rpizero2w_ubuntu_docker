@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  rpizero2w-clone:
+    container_name: rpizero2w-clone
+    build:
+      context: ./build
+      args:
+        # find user id and group ids with:
+        # id -u
+        # id -g
+        UID: 1000
+        GID: 1000
+
+    # make container use same network interfaces, IP addresses, and ports as the host system
+    network_mode: host
+    # enable gazebo to use gpus, comment out this line if no nvidia gpus
+    # runtime: nvidia 
+    # use interactive terminal sessions with the container
+    tty: true
+    # grants the container elevated privileges
+    privileged: true
+    # make container to stay running indefinitely
+    command: tail -f /dev/null
+    environment:
+      - "DISPLAY=$DISPLAY"
+      # - "DISPLAY=127.0.0.1:11.0"
+      - TERM=xterm-256color
+      - DEBUG_COLORS=true
+      - COLORTERM=truecolor
+      # - NVIDIA_VISIBLE_DEVICES=all
+      # - NVIDIA_DRIVER_CAPABILITIES=all
+      # - ROS_MASTER_URI=http://rotterdam:11311 #rotterdam
+    volumes: 
+      - ./workspace:/home/
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /dev/ttyUSB0:/dev/ttyUSB0
+      - /dev/ttyUSB1:/dev/ttyUSB1
